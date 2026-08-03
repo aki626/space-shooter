@@ -1,65 +1,137 @@
-body{
+body {
 
-margin:0;
-background:#003b5c;
-color:white;
-text-align:center;
-font-family:sans-serif;
-overflow:hidden;
+    margin:0;
+    padding:0;
 
-}
+    background:#003b5c;
 
+    color:white;
 
-canvas{
+    text-align:center;
 
-background:#0088aa;
+    font-family:sans-serif;
 
-display:block;
+    overflow:hidden;
 
-margin:auto;
-
-width:95vw;
-max-width:500px;
-
-border:2px solid white;
+    touch-action:none;
 
 }
 
 
-button{
 
-font-size:25px;
+h1 {
 
-padding:10px;
-
-margin:5px;
-
-border-radius:15px;
+    margin:8px;
 
 }
 
 
-#controls{
 
-position:fixed;
+#select {
 
-bottom:20px;
-
-left:0;
-
-right:0;
-
-display:flex;
-
-justify-content:center;
-
-gap:15px;
+    margin:10px;
 
 }
 
 
-#select{
 
-margin:10px;
+#select button {
+
+    font-size:20px;
+
+    padding:10px;
+
+    margin:5px;
+
+    border-radius:12px;
+
+    border:none;
+
+    background:#444;
+
+    color:white;
+
+}
+
+
+
+canvas {
+
+    display:block;
+
+    margin:auto;
+
+    background:#0088aa;
+
+    border:3px solid white;
+
+    width:95vw;
+
+    max-width:500px;
+
+    height:auto;
+
+}
+
+
+
+#controls {
+
+    position:fixed;
+
+    bottom:20px;
+
+    left:0;
+
+    right:0;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    gap:12px;
+
+}
+
+
+
+#controls button {
+
+    width:75px;
+
+    height:70px;
+
+
+    font-size:32px;
+
+
+    border-radius:20px;
+
+    border:2px solid white;
+
+
+    background:#222;
+
+    color:white;
+
+}
+
+
+
+#controls button:active {
+
+    background:#777;
+
+}
+
+
+
+#waveText {
+
+    font-size:22px;
 
 }
