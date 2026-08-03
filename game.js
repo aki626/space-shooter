@@ -5,233 +5,479 @@ canvas.width = 500;
 canvas.height = 700;
 
 
+let gameStart = false;
+
 let player = {
-    x: 230,
-    y: 600,
-    size: 40,
-    speed: 5
+    x:230,
+    y:580,
+    size:40,
+    speed:5,
+    hp:100
 };
 
 
+let shipType = "";
+
 let bullets = [];
 let enemies = [];
+let enemyBullets = [];
+
+let fighters = [];
+let bombs = [];
+
 let score = 0;
 
-let keys = {};
 
+// 艦選択
 
-// PC操作
-document.addEventListener("keydown", e => {
+function selectShip(type){
 
-    keys[e.key] = true;
+    shipType = type;
 
-    if(e.key === " "){
-        shoot();
+    if(type === "destroyer"){
+        player.hp = 70;
+        player.speed = 8;
     }
 
+    if(type === "battleship"){
+        player.hp = 150;
+        player.speed = 3;
+    }
+
+    if(type === "carrier"){
+        player.hp = 100;
+        player.speed = 5;
+    }
+
+
+    document.getElementById("select").style.display="none";
+
+    gameStart=true;
+
+}
+
+
+
+// キー操作
+
+let keys={};
+
+
+document.addEventListener("keydown",e=>{
+
+    keys[e.key]=true;
+
+    if(e.key===" ")
+        shoot();
+
 });
 
 
-document.addEventListener("keyup", e => {
-    keys[e.key] = false;
+document.addEventListener("keyup",e=>{
+
+    keys[e.key]=false;
+
 });
+
 
 
 // スマホ操作
 
-left.ontouchstart = () => {
-    keys["ArrowLeft"] = true;
+left.ontouchstart=()=>{
+    keys["ArrowLeft"]=true;
 };
 
-left.ontouchend = () => {
-    keys["ArrowLeft"] = false;
-};
-
-
-right.ontouchstart = () => {
-    keys["ArrowRight"] = true;
-};
-
-right.ontouchend = () => {
-    keys["ArrowRight"] = false;
+left.ontouchend=()=>{
+    keys["ArrowLeft"]=false;
 };
 
 
-shoot.onclick = () => {
+right.ontouchstart=()=>{
+    keys["ArrowRight"]=true;
+};
+
+right.ontouchend=()=>{
+    keys["ArrowRight"]=false;
+};
+
+
+shoot.onclick=()=>{
     shoot();
 };
 
 
+fighter.onclick=()=>{
+    launchFighter();
+};
+
+
+
+// 発射
+
 function shoot(){
 
     bullets.push({
-        x: player.x + 18,
-        y: player.y
+
+        x:player.x+18,
+        y:player.y
+
     });
 
 }
 
 
 
-function update(){
+// 戦闘機
 
+function launchFighter(){
 
-    // 移動
+    if(shipType==="carrier"){
 
-    if(keys["ArrowLeft"])
-        player.x -= player.speed;
+        fighters.push({
 
-
-    if(keys["ArrowRight"])
-        player.x += player.speed;
-
-
-    if(player.x < 0)
-        player.x = 0;
-
-
-    if(player.x > canvas.width-player.size)
-        player.x = canvas.width-player.size;
-
-
-
-    // 弾
-
-    bullets.forEach(b=>{
-        b.y -= 8;
-    });
-
-
-
-    // 敵生成
-
-    if(Math.random() < 0.02){
-
-        enemies.push({
-
-            x: Math.random()*460,
-            y:-40,
-            size:40
+            x:player.x,
+            y:player.y-40
 
         });
 
     }
 
+}
 
 
-    // 敵移動
 
-    enemies.forEach(e=>{
+// 更新
 
-        e.y += 2;
+function update(){
+
+
+if(!gameStart)return;
+
+
+
+// 移動
+
+if(keys["ArrowLeft"])
+player.x-=player.speed;
+
+
+if(keys["ArrowRight"])
+player.x+=player.speed;
+
+
+if(player.x<0)
+player.x=0;
+
+
+if(player.x>460)
+player.x=460;
+
+
+
+// 自分の弾
+
+bullets.forEach(b=>{
+
+    b.y-=8;
+
+});
+
+
+
+// 敵生成
+
+if(Math.random()<0.02){
+
+    enemies.push({
+
+        x:Math.random()*460,
+        y:-40,
+        size:40,
+        hp:3
 
     });
 
+}
 
 
-    // 当たり判定
 
-    bullets.forEach((b,bi)=>{
+// 敵移動
 
-        enemies.forEach((e,ei)=>{
+enemies.forEach(e=>{
+
+    e.y+=2;
 
 
-            if(
-                b.x < e.x+e.size &&
-                b.x+5 > e.x &&
-                b.y < e.y+e.size &&
-                b.y+15 > e.y
-            ){
+    // 敵射撃
 
-                bullets.splice(bi,1);
+    if(Math.random()<0.01){
 
-                enemies.splice(ei,1);
+        enemyBullets.push({
 
-                score += 10;
-
-            }
-
+            x:e.x+20,
+            y:e.y+40
 
         });
 
+    }
+
+});
+
+
+
+// 敵弾
+
+enemyBullets.forEach(b=>{
+
+    b.y+=5;
+
+
+});
+
+
+
+// 戦闘機
+
+fighters.forEach(f=>{
+
+    f.y-=5;
+
+
+    if(Math.random()<0.05){
+
+        bombs.push({
+
+            x:f.x,
+            y:f.y
+
+        });
+
+    }
+
+});
+
+
+
+// 爆弾
+
+bombs.forEach(b=>{
+
+    b.y+=6;
+
+});
+
+
+
+
+// 弾と敵
+
+bullets.forEach((b,bi)=>{
+
+    enemies.forEach((e,ei)=>{
+
+
+        if(hit(b,e)){
+
+            e.hp--;
+
+            bullets.splice(bi,1);
+
+
+            if(e.hp<=0){
+
+                enemies.splice(ei,1);
+
+                score+=10;
+
+            }
+
+        }
+
 
     });
 
+});
+
+
+
+// 爆弾と敵
+
+bombs.forEach((b,bi)=>{
+
+    enemies.forEach((e,ei)=>{
+
+
+        if(hit(b,e)){
+
+            enemies.splice(ei,1);
+
+            bombs.splice(bi,1);
+
+            score+=30;
+
+        }
+
+
+    });
+
+});
+
+
+
+// 敵弾と自分
+
+enemyBullets.forEach((b,i)=>{
+
+
+    if(hit(b,player)){
+
+
+        enemyBullets.splice(i,1);
+
+        player.hp-=10;
+
+
+    }
+
+
+});
+
+
+
+// ゲームオーバー
+
+if(player.hp<=0){
+
+    alert("撃沈しました");
+
+    location.reload();
+
+}
 
 
 }
 
 
 
+// 当たり判定
+
+function hit(a,b){
+
+return (
+
+a.x < b.x+b.size &&
+a.x+10 > b.x &&
+a.y < b.y+b.size &&
+a.y+10 > b.y
+
+);
+
+}
+
+
+
+
+// 描画
+
 function draw(){
 
 
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+ctx.clearRect(0,0,500,700);
 
 
-    // 自機
+// プレイヤー
 
-    ctx.fillStyle="cyan";
+ctx.fillStyle="cyan";
 
-    ctx.fillRect(
-        player.x,
-        player.y,
-        player.size,
-        player.size
-    );
+ctx.fillRect(
+
+player.x,
+player.y,
+player.size,
+player.size
+
+);
 
 
 
-    // 弾
+// 弾
 
-    ctx.fillStyle="yellow";
+ctx.fillStyle="yellow";
 
-    bullets.forEach(b=>{
+bullets.forEach(b=>{
 
-        ctx.fillRect(
-            b.x,
-            b.y,
-            5,
-            15
-        );
+ctx.fillRect(b.x,b.y,5,15);
 
-    });
+});
 
 
 
-    // 敵
+// 敵
 
-    ctx.fillStyle="red";
+ctx.fillStyle="red";
 
-    enemies.forEach(e=>{
+enemies.forEach(e=>{
 
-        ctx.fillRect(
-            e.x,
-            e.y,
-            e.size,
-            e.size
-        );
+ctx.fillRect(e.x,e.y,e.size,e.size);
 
-    });
+
+});
 
 
 
-    // スコア
+// 敵弾
 
-    ctx.fillStyle="white";
+ctx.fillStyle="orange";
 
-    ctx.font="24px Arial";
+enemyBullets.forEach(b=>{
 
-    ctx.fillText(
-        "Score: "+score,
-        10,
-        30
-    );
+ctx.fillRect(b.x,b.y,5,15);
+
+});
+
+
+
+// 戦闘機
+
+ctx.fillStyle="white";
+
+fighters.forEach(f=>{
+
+ctx.fillRect(f.x,f.y,20,20);
+
+});
+
+
+
+// 爆弾
+
+ctx.fillStyle="black";
+
+bombs.forEach(b=>{
+
+ctx.fillRect(b.x,b.y,8,15);
+
+});
+
+
+
+// 情報
+
+ctx.fillStyle="white";
+
+ctx.font="20px Arial";
+
+ctx.fillText(
+"HP:"+player.hp,
+10,
+30
+);
+
+ctx.fillText(
+"Score:"+score,
+10,
+55
+);
 
 
 }
@@ -240,11 +486,11 @@ function draw(){
 
 function loop(){
 
-    update();
+update();
 
-    draw();
+draw();
 
-    requestAnimationFrame(loop);
+requestAnimationFrame(loop);
 
 }
 
