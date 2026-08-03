@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
@@ -16,26 +17,46 @@
 <body>
 
 
+<div id="title">
+
+
 <h1>⚓ 海戦ゲーム</h1>
 
 
-<div id="select">
-
 <h2>艦を選択</h2>
+
 
 <button onclick="selectShip('destroyer')">
 🚢 駆逐艦
 </button>
 
+
 <button onclick="selectShip('battleship')">
 ⚓ 戦艦
 </button>
+
 
 <button onclick="selectShip('carrier')">
 🛳️ 空母
 </button>
 
+
+<br>
+
+
+<button id="startButton" onclick="startGame()">
+▶ START
+</button>
+
+
+<p id="shipInfo">
+艦を選択してください
+</p>
+
+
 </div>
+
+
 
 
 
@@ -44,6 +65,7 @@
 
 
 <div id="controls">
+
 
 <button id="left">
 ⬅
@@ -64,6 +86,7 @@
 ➡
 </button>
 
+
 </div>
 
 
@@ -74,13 +97,16 @@
 WAVE 1
 </p>
 
+
 <p id="hp">
 HP 100
 </p>
 
+
 <p id="score">
 SCORE 0
 </p>
+
 
 </div>
 
@@ -90,4 +116,5 @@ SCORE 0
 
 
 </body>
+
 </html>
