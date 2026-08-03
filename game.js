@@ -5,13 +5,14 @@ canvas.width = 500;
 canvas.height = 700;
 
 
-// 状態
+// ゲーム状態
 
 let started = false;
 
 let shipType = "";
 
 let selected = false;
+
 
 let wave = 1;
 
@@ -29,11 +30,11 @@ let player = {
 
     y:580,
 
+    size:40,
+
     hp:100,
 
-    speed:5,
-
-    size:40
+    speed:5
 
 };
 
@@ -41,17 +42,17 @@ let player = {
 
 // 配列
 
-let bullets=[];
+let bullets = [];
 
-let enemies=[];
+let enemies = [];
 
-let enemyBullets=[];
+let enemyBullets = [];
 
-let fighters=[];
+let fighters = [];
 
 
 
-let keys={};
+let keys = {};
 
 
 
@@ -61,25 +62,22 @@ let keys={};
 function selectShip(type){
 
 
-    shipType=type;
+    shipType = type;
 
-    selected=true;
-
-
-
-    let info="";
+    selected = true;
 
 
 
     if(type==="destroyer"){
 
 
-        player.hp=80;
+        player.hp = 80;
 
-        player.speed=8;
+        player.speed = 8;
 
 
-        info="🚢 駆逐艦 HP80 速度8";
+        shipInfo.innerHTML =
+        "🚤 駆逐艦 HP80 速度8";
 
     }
 
@@ -88,12 +86,13 @@ function selectShip(type){
     if(type==="battleship"){
 
 
-        player.hp=200;
+        player.hp = 200;
 
-        player.speed=3;
+        player.speed = 3;
 
 
-        info="⚓ 戦艦 HP200 速度3";
+        shipInfo.innerHTML =
+        "⚓ 戦艦 HP200 速度3";
 
     }
 
@@ -102,23 +101,20 @@ function selectShip(type){
     if(type==="carrier"){
 
 
-        player.hp=120;
+        player.hp = 120;
 
-        player.speed=5;
+        player.speed = 5;
 
 
-        info="🛳️ 空母 HP120 艦載機あり";
-
+        shipInfo.innerHTML =
+        "🛳️ 空母 HP120 艦載機あり";
 
     }
 
 
-
-    document.getElementById("shipInfo").innerHTML=info;
-
-
-
 }
+
+
 
 
 
@@ -129,7 +125,6 @@ function startGame(){
 
     if(!selected){
 
-
         alert("艦を選択してください");
 
         return;
@@ -137,28 +132,24 @@ function startGame(){
     }
 
 
-
-    document.getElementById("title").style.display="none";
+    title.style.display="none";
 
 
     canvas.style.display="block";
 
 
-    document.getElementById("controls").style.display="flex";
+    controls.style.display="flex";
 
 
-    document.getElementById("status").style.display="block";
+    status.style.display="block";
 
 
 
     if(shipType==="carrier"){
 
-
-        fighter.style.display="inline-block";
-
+        fighter.style.display="block";
 
     }
-
 
 
     started=true;
@@ -168,13 +159,15 @@ function startGame(){
 
 
 
+
+
+
 // キーボード
 
 document.addEventListener("keydown",e=>{
 
 
     keys[e.key]=true;
-
 
 
     if(e.key===" ")
@@ -197,7 +190,8 @@ document.addEventListener("keyup",e=>{
 
 
 
-// スマホ操作
+
+// スマホ移動
 
 left.ontouchstart=()=>{
 
@@ -229,10 +223,11 @@ right.ontouchend=()=>{
 
 
 
-// 攻撃ボタン
+
+
+// 攻撃
 
 shoot.onclick=shoot;
-
 
 
 function shoot(){
@@ -240,13 +235,11 @@ function shoot(){
 
     bullets.push({
 
-
         x:player.x+18,
 
         y:player.y,
 
         size:5
-
 
     });
 
@@ -255,7 +248,9 @@ function shoot(){
 
 
 
-// 戦闘機ボタン
+
+
+// 戦闘機
 
 fighter.onclick=()=>{
 
@@ -265,11 +260,9 @@ fighter.onclick=()=>{
 
         fighters.push({
 
-
             x:player.x+10,
 
             y:player.y-50
-
 
         });
 
@@ -278,42 +271,87 @@ fighter.onclick=()=>{
 
 
 };
-// 更新処理
+// 敵生成
+
+function spawnEnemy(){
+
+
+    let type = Math.floor(Math.random()*3);
+
+
+
+    enemies.push({
+
+        x:Math.random()*460,
+
+        y:-50,
+
+        size:40,
+
+        hp:wave,
+
+
+        type:type,
+
+
+        dx:2,
+
+
+        angle:0
+
+
+    });
+
+
+}
+
+
+
+
+// 更新
 
 function update(){
 
 
-    if(!started) return;
+    if(!started)
+        return;
 
 
 
-    // 移動
+
+    // プレイヤー移動
 
     if(keys["ArrowLeft"])
-        player.x -= player.speed;
+
+        player.x-=player.speed;
+
 
 
     if(keys["ArrowRight"])
-        player.x += player.speed;
+
+        player.x+=player.speed;
 
 
 
-    if(player.x < 0)
-        player.x = 0;
+    if(player.x<0)
 
-
-    if(player.x > 460)
-        player.x = 460;
+        player.x=0;
 
 
 
+    if(player.x>460)
+
+        player.x=460;
 
 
-    // 弾
+
+
+
+    // 弾移動
 
     bullets.forEach(b=>{
 
-        b.y -= 8;
+        b.y-=8;
 
     });
 
@@ -321,26 +359,19 @@ function update(){
 
 
 
-    // 敵ウェーブ
+
+    // ウェーブ敵出現
 
     if(
+
         enemies.length===0 &&
+
         enemyLeft>0
+
     ){
 
 
-        enemies.push({
-
-            x:Math.random()*460,
-
-            y:-50,
-
-            size:40,
-
-            hp:wave
-
-
-        });
+        spawnEnemy();
 
 
         enemyLeft--;
@@ -352,12 +383,95 @@ function update(){
 
 
 
-    // 敵
+    // 敵の動き
 
     enemies.forEach(e=>{
 
 
-        e.y+=2;
+        e.angle+=0.05;
+
+
+
+
+        // 🚤 駆逐艦
+
+        if(e.type===0){
+
+
+            e.x += Math.sin(e.angle)*3;
+
+
+            e.y += 3;
+
+
+        }
+
+
+
+
+
+        // 🚢 巡洋艦
+
+        if(e.type===1){
+
+
+            e.x+=e.dx;
+
+
+            e.y+=2;
+
+
+
+            if(e.x<=0 || e.x>=460){
+
+
+                e.dx*=-1;
+
+
+            }
+
+
+        }
+
+
+
+
+
+        // ⚓ 戦艦
+
+        if(e.type===2){
+
+
+            if(e.x<player.x)
+
+                e.x+=1;
+
+
+
+            if(e.x>player.x)
+
+                e.x-=1;
+
+
+
+            e.y+=1.5;
+
+
+        }
+
+
+
+
+
+
+        // 画面下で跳ね返る
+
+        if(e.y>600){
+
+            e.y=600;
+
+        }
+
 
 
 
@@ -368,18 +482,17 @@ function update(){
 
             enemyBullets.push({
 
-
-                x:e.x+18,
+                x:e.x+20,
 
                 y:e.y+40,
 
                 size:6
 
-
             });
 
 
         }
+
 
 
     });
@@ -398,6 +511,7 @@ function update(){
 
 
     });
+
 
 
 
@@ -430,71 +544,34 @@ function update(){
 
 
     });
+// 弾と敵の当たり判定
+
+bullets.forEach((b,bi)=>{
+
+
+    enemies.forEach((e,ei)=>{
+
+
+        if(hit(b,e)){
+
+
+            e.hp--;
+
+
+            bullets.splice(bi,1);
 
 
 
+            if(e.hp<=0){
 
 
-
-    // 弾と敵
-
-    bullets.forEach((b,bi)=>{
+                enemies.splice(ei,1);
 
 
-        enemies.forEach((e,ei)=>{
-
-
-            if(hit(b,e)){
-
-
-
-                e.hp--;
-
-
-                bullets.splice(bi,1);
-
-
-
-                if(e.hp<=0){
-
-
-                    enemies.splice(ei,1);
-
-
-                    score+=10;
-
-
-                }
+                score+=10;
 
 
             }
-
-
-
-        });
-
-
-
-    });
-
-
-
-
-
-
-
-    // 敵弾とプレイヤー
-
-    enemyBullets.forEach((b,i)=>{
-
-
-        if(hit(b,player)){
-
-
-            enemyBullets.splice(i,1);
-
-
-            player.hp-=10;
 
 
         }
@@ -503,43 +580,52 @@ function update(){
     });
 
 
+});
 
 
 
 
 
-    // ウェーブクリア
 
-    if(
-        enemies.length===0 &&
-        enemyLeft===0
-    ){
+// 敵弾とプレイヤー
+
+enemyBullets.forEach((b,bi)=>{
 
 
-        wave++;
+    if(hit(b,player)){
 
 
-        enemyLeft=wave*5;
+        enemyBullets.splice(bi,1);
 
 
-    }
-
-
-
-
-
-    if(player.hp<=0){
-
-
-        alert("撃沈しました");
-
-
-        location.reload();
+        player.hp-=10;
 
 
     }
 
 
+});
+
+
+
+
+
+
+// ウェーブ終了
+
+if(
+
+    enemies.length===0 &&
+
+    enemyLeft===0
+
+){
+
+
+    wave++;
+
+
+    enemyLeft=wave*5;
 
 
 }
@@ -548,12 +634,35 @@ function update(){
 
 
 
+
+// ゲームオーバー
+
+if(player.hp<=0){
+
+
+    alert("⚓ 撃沈しました");
+
+
+    location.reload();
+
+
+}
+
+
+
+
+
+
+}
+
+
+
 // 当たり判定
 
 function hit(a,b){
 
 
-    return(
+    return (
 
         a.x < b.x+b.size &&
 
@@ -581,13 +690,15 @@ function draw(){
 
 
 
-    // プレイヤー船
+    // 自分の船
 
     drawShip(
         player.x,
         player.y,
-        "cyan"
+        "cyan",
+        shipType
     );
+
 
 
 
@@ -600,11 +711,13 @@ function draw(){
         drawShip(
             e.x,
             e.y,
-            "red"
+            "red",
+            e.type
         );
 
 
     });
+
 
 
 
@@ -627,6 +740,7 @@ function draw(){
 
 
     });
+
 
 
 
@@ -679,17 +793,17 @@ function draw(){
 
 
 
-    // 表示
+    // UI
 
-    document.getElementById("hp").innerHTML =
+    hp.innerHTML =
     "HP "+player.hp;
 
 
-    document.getElementById("score").innerHTML =
+    score.innerHTML =
     "SCORE "+score;
 
 
-    document.getElementById("wave").innerHTML =
+    wave.innerHTML =
     "WAVE "+wave;
 
 
@@ -702,14 +816,91 @@ function draw(){
 
 // 船を描く
 
-function drawShip(x,y,color){
+function drawShip(x,y,color,type){
 
 
     ctx.fillStyle=color;
 
 
 
-    // 船体
+    // 空母
+
+    if(type==="carrier"){
+
+
+        ctx.fillRect(
+            x,
+            y+15,
+            50,
+            25
+        );
+
+
+        ctx.fillStyle="gray";
+
+
+        ctx.fillRect(
+            x+10,
+            y,
+            20,
+            15
+        );
+
+
+        return;
+
+    }
+
+
+
+
+
+
+    // 戦艦
+
+    if(type==="battleship"){
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(x+20,y);
+
+
+        ctx.lineTo(x+45,y+40);
+
+
+        ctx.lineTo(x,y+40);
+
+
+        ctx.closePath();
+
+
+        ctx.fill();
+
+
+
+        ctx.fillStyle="black";
+
+
+        ctx.fillRect(
+            x+18,
+            y+5,
+            5,
+            20
+        );
+
+
+        return;
+
+    }
+
+
+
+
+
+
+    // 駆逐艦
 
     ctx.beginPath();
 
@@ -721,26 +912,14 @@ function drawShip(x,y,color){
 
 
     ctx.lineTo(
-        x+42,
-        y+35
-    );
-
-
-    ctx.lineTo(
         x+35,
-        y+45
+        y+40
     );
 
 
     ctx.lineTo(
         x+5,
-        y+45
-    );
-
-
-    ctx.lineTo(
-        x,
-        y+35
+        y+40
     );
 
 
@@ -748,42 +927,6 @@ function drawShip(x,y,color){
 
 
     ctx.fill();
-
-
-
-
-
-    // 艦橋
-
-    ctx.fillStyle="gray";
-
-
-    ctx.fillRect(
-
-        x+15,
-        y+15,
-        10,
-        15
-
-    );
-
-
-
-
-
-    // 砲台
-
-    ctx.fillStyle="black";
-
-
-    ctx.fillRect(
-
-        x+18,
-        y+5,
-        4,
-        15
-
-    );
 
 
 
@@ -810,6 +953,7 @@ function loop(){
 
 
 }
+
 
 
 loop();
