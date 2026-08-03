@@ -29,7 +29,7 @@ body{
 
 #title h1{
 
-    font-size:40px;
+    font-size:42px;
 
 }
 
@@ -65,11 +65,11 @@ button:active{
 
 #startButton{
 
-    background:#0066cc;
+    background:#0077dd;
 
     font-size:30px;
 
-    margin-top:20px;
+    margin-top:25px;
 
 }
 
@@ -97,11 +97,7 @@ canvas{
 
     max-width:500px;
 
-    height:auto;
-
 }
-
-
 
 
 
@@ -129,19 +125,25 @@ canvas{
 
 
 
-
 #controls button{
 
     width:75px;
 
     height:70px;
 
-    font-size:35px;
+    font-size:32px;
 
     border-radius:20px;
 
 }
 
+
+
+#fighter{
+
+    display:none;
+
+}
 
 
 
