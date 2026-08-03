@@ -162,6 +162,20 @@ canvas.width=500;
 canvas.height=700;
 
 
+// id名とJS変数名の衝突(shoot・wave)を避けるため明示的に取得
+const titleEl=document.getElementById("title");
+const shipInfoEl=document.getElementById("shipInfo");
+const controlsEl=document.getElementById("controls");
+const statusEl=document.getElementById("status");
+const waveEl=document.getElementById("wave");
+const hpEl=document.getElementById("hp");
+const scoreEl=document.getElementById("score");
+const leftBtn=document.getElementById("left");
+const rightBtn=document.getElementById("right");
+const shootBtn=document.getElementById("shoot");
+const fighterBtn=document.getElementById("fighter");
+
+
 
 let started=false;
 
@@ -214,7 +228,7 @@ function selectShip(type){
         player.hp=80;
         player.speed=8;
 
-        shipInfo.innerHTML=
+        shipInfoEl.innerHTML=
         "🚤 駆逐艦 HP80 速度8";
 
     }
@@ -225,7 +239,7 @@ function selectShip(type){
         player.hp=200;
         player.speed=3;
 
-        shipInfo.innerHTML=
+        shipInfoEl.innerHTML=
         "⚓ 戦艦 HP200 速度3";
 
     }
@@ -236,7 +250,7 @@ function selectShip(type){
         player.hp=120;
         player.speed=5;
 
-        shipInfo.innerHTML=
+        shipInfoEl.innerHTML=
         "🛳️ 空母 HP120 戦闘機あり";
 
     }
@@ -260,18 +274,18 @@ function startGame(){
     }
 
 
-    title.style.display="none";
+    titleEl.style.display="none";
 
-    game.style.display="block";
+    canvas.style.display="block";
 
-    controls.style.display="flex";
+    controlsEl.style.display="flex";
 
-    status.style.display="block";
+    statusEl.style.display="block";
 
 
     if(shipType=="carrier"){
 
-        fighter.style.display="block";
+        fighterBtn.style.display="block";
 
     }
 
@@ -324,20 +338,20 @@ document.addEventListener("keyup",e=>{
 
 
 
-left.ontouchstart=()=>keys["ArrowLeft"]=true;
+leftBtn.ontouchstart=()=>keys["ArrowLeft"]=true;
 
-left.ontouchend=()=>keys["ArrowLeft"]=false;
-
-
-right.ontouchstart=()=>keys["ArrowRight"]=true;
-
-right.ontouchend=()=>keys["ArrowRight"]=false;
+leftBtn.ontouchend=()=>keys["ArrowLeft"]=false;
 
 
+rightBtn.ontouchstart=()=>keys["ArrowRight"]=true;
+
+rightBtn.ontouchend=()=>keys["ArrowRight"]=false;
 
 
 
-shoot.onclick=shoot;
+
+
+shootBtn.onclick=shoot;
 
 
 function shoot(){
@@ -360,7 +374,7 @@ function shoot(){
 
 
 
-fighter.onclick=()=>{
+fighterBtn.onclick=()=>{
 
 
     if(shipType=="carrier"){
@@ -826,11 +840,11 @@ f.y,
 
 // UI
 
-hp.innerHTML="HP "+player.hp;
+hpEl.innerHTML="HP "+player.hp;
 
-score.innerHTML="SCORE "+scoreValue;
+scoreEl.innerHTML="SCORE "+scoreValue;
 
-wave.innerHTML="WAVE "+wave;
+waveEl.innerHTML="WAVE "+wave;
 
 
 
