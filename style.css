@@ -1,28 +1,94 @@
 body {
     margin: 0;
-    background: black;
-    overflow: hidden;
+    padding: 0;
+    background: #001b33;
+    color: white;
     text-align: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
     touch-action: none;
 }
 
+
+h1 {
+    margin: 10px;
+}
+
+
 canvas {
+    background: #0077aa;
     display: block;
     margin: auto;
-    background: #111;
-    max-width: 100%;
+    border: 3px solid white;
+
+    width: 95vw;
+    max-width: 500px;
+    height: auto;
 }
+
+
+#select {
+
+    margin: 10px;
+
+}
+
+
+#select button {
+
+    font-size: 20px;
+    padding: 10px;
+    margin: 5px;
+
+    border-radius: 10px;
+    border: none;
+
+    background: #444;
+    color: white;
+
+}
+
 
 #controls {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
     margin-top: 10px;
+
 }
 
-button {
-    font-size: 35px;
-    width: 90px;
+
+#controls button {
+
+    width: 80px;
     height: 70px;
-    margin: 5px;
+
+    font-size: 35px;
+
     border-radius: 15px;
+
+    border: 2px solid white;
+
     background: #333;
+
     color: white;
+
+}
+
+
+#controls button:active {
+
+    background: #777;
+
+}
+
+
+#info {
+
+    font-size: 20px;
+
 }
