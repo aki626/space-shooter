@@ -1,20 +1,17 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-
 canvas.width = 500;
 canvas.height = 700;
 
 
-
-// ゲーム状態
+// 状態
 
 let started = false;
 
 let selected = false;
 
 let shipType = "";
-
 
 
 let wave = 1;
@@ -43,7 +40,6 @@ let player = {
 
 
 
-
 // 配列
 
 let bullets = [];
@@ -56,7 +52,11 @@ let fighters = [];
 
 
 
+
+
 let keys = {};
+
+
 
 
 
@@ -128,6 +128,9 @@ function selectShip(type){
 
 
 
+
+
+
 // START
 
 function startGame(){
@@ -140,7 +143,6 @@ function startGame(){
         return;
 
     }
-
 
 
     title.style.display="none";
@@ -194,8 +196,7 @@ function startWave(){
 
 
 
-
-// キーボード操作
+// キー操作
 
 document.addEventListener("keydown",e=>{
 
@@ -219,6 +220,7 @@ document.addEventListener("keyup",e=>{
 
 
 });
+
 
 
 
@@ -261,10 +263,10 @@ right.ontouchend=()=>{
 
 
 
+
 // 攻撃
 
 shoot.onclick=shoot;
-
 
 
 function shoot(){
@@ -272,11 +274,13 @@ function shoot(){
 
     bullets.push({
 
+
         x:player.x+18,
 
         y:player.y,
 
         size:5
+
 
     });
 
@@ -287,7 +291,9 @@ function shoot(){
 
 
 
-// 戦闘機
+
+
+// 空母戦闘機
 
 fighter.onclick=()=>{
 
@@ -297,9 +303,11 @@ fighter.onclick=()=>{
 
         fighters.push({
 
+
             x:player.x+10,
 
             y:player.y-50
+
 
         });
 
@@ -308,7 +316,7 @@ fighter.onclick=()=>{
 
 
 };
-// 敵を作る
+// 敵生成
 
 function spawnEnemy(){
 
@@ -316,12 +324,12 @@ function spawnEnemy(){
     let type = Math.floor(Math.random()*3);
 
 
-
     enemies.push({
 
         x:Math.random()*460,
 
         y:-50,
+
 
         size:40,
 
@@ -332,11 +340,13 @@ function spawnEnemy(){
         type:type,
 
 
-        dx:2,
+        speed:1.5,
 
-        dy:2,
 
-        angle:0
+        angle:0,
+
+
+        dy:1.5
 
 
     });
@@ -358,6 +368,7 @@ function update(){
     if(!started)
 
         return;
+
 
 
 
@@ -395,10 +406,10 @@ function update(){
 
 
 
+
     // 弾移動
 
-
-    bullets.forEach((b)=>{
+    bullets.forEach(b=>{
 
 
         b.y-=8;
@@ -412,15 +423,9 @@ function update(){
 
 
 
-    // 敵を5体まで出す
+    // 敵を出す
 
-    if(
-
-        enemyLeft>0 &&
-
-        enemies.length<5
-
-    ){
+    if(enemyLeft>0 && enemies.length<5){
 
 
         spawnEnemy();
@@ -438,109 +443,66 @@ function update(){
 
 
 
-    // 敵の動き
+    // 敵移動
 
     enemies.forEach(e=>{
 
 
+        // プレイヤー方向
+
+        let dx = player.x - e.x;
+
+        let dy = player.y - e.y;
+
+
+
+        let distance = Math.sqrt(
+
+            dx*dx + dy*dy
+
+        );
+
+
+
+
+
+        if(distance>0){
+
+
+            e.x += (dx/distance) * e.speed;
+
+
+            e.y += (dy/distance) * e.speed;
+
+
+        }
+
+
+
+
+
+        // 少し左右カーブ
+
         e.angle+=0.05;
 
 
+        e.x += Math.sin(e.angle)*1.5;
 
 
 
-        // 🚤 駆逐艦
 
-        if(e.type===0){
 
 
 
-            e.x += Math.sin(e.angle)*3;
+        // 下に来たら跳ね返り
 
-
-            e.y += e.dy;
-
-
-        }
-
-
-
-
-
-
-        // 🚢 巡洋艦
-
-        if(e.type===1){
-
-
-
-            e.x += e.dx;
-
-
-            e.y += e.dy;
-
-
-
-
-            if(e.x<=0 || e.x>=460){
-
-
-                e.dx*=-1;
-
-
-            }
-
-
-        }
-
-
-
-
-
-
-
-
-        // ⚓ 戦艦 追尾
-
-        if(e.type===2){
-
-
-
-            if(e.x < player.x)
-
-                e.x+=1;
-
-
-
-            if(e.x > player.x)
-
-                e.x-=1;
-
-
-
-            e.y+=1.5;
-
-
-
-        }
-
-
-
-
-
-
-
-        // 下で跳ね返る
-
-        if(e.y>=600){
-
+        if(e.y>600){
 
 
             e.y=600;
 
 
-            e.dy=-Math.abs(e.dy);
-
+            e.speed*=-1;
 
 
         }
@@ -550,13 +512,13 @@ function update(){
 
 
 
-        // 上で戻る
 
-        if(e.y<=0){
+        // 上に戻ったら方向修正
+
+        if(e.speed<0 && e.y<50){
 
 
-
-            e.dy=Math.abs(e.dy);
+            e.speed=Math.abs(e.speed);
 
 
         }
@@ -571,7 +533,6 @@ function update(){
         // 敵砲撃
 
         if(Math.random()<0.02){
-
 
 
             enemyBullets.push({
@@ -616,7 +577,6 @@ function update(){
 
 
 
-
     // 戦闘機
 
     fighters.forEach(f=>{
@@ -627,7 +587,6 @@ function update(){
 
 
         if(Math.random()<0.05){
-
 
 
             bullets.push({
@@ -646,9 +605,31 @@ function update(){
         }
 
 
-
     });
-    // 弾と敵の当たり判定
+    // 当たり判定
+
+function hit(a,b){
+
+    return (
+
+        a.x < b.x + b.size &&
+
+        a.x + a.size > b.x &&
+
+        a.y < b.y + b.size &&
+
+        a.y + a.size > b.y
+
+    );
+
+}
+
+
+
+
+
+
+// 弾と敵
 
 bullets.forEach((b,bi)=>{
 
@@ -717,7 +698,7 @@ enemyBullets.forEach((b,bi)=>{
 
 
 
-// 弾が画面外なら削除
+// 弾の削除
 
 bullets.forEach((b,i)=>{
 
@@ -732,6 +713,7 @@ bullets.forEach((b,i)=>{
 
 
 });
+
 
 
 
@@ -757,8 +739,7 @@ enemyBullets.forEach((b,i)=>{
 
 
 
-
-// 敵が画面外へ行った場合
+// 敵が遠くへ行った場合
 
 enemies.forEach((e,i)=>{
 
@@ -780,7 +761,8 @@ enemies.forEach((e,i)=>{
 
 
 
-// ウェーブ終了
+
+// ウェーブクリア
 
 if(
 
@@ -805,7 +787,6 @@ if(
 
 
 
-
 // ゲームオーバー
 
 if(player.hp<=0){
@@ -818,41 +799,9 @@ if(player.hp<=0){
 
 
 }
-
-
-
-
-
-
-
-}
-
-
-
-
-// 当たり判定
-
-function hit(a,b){
-
-
-    return (
-
-        a.x < b.x+b.size &&
-
-        a.x+a.size > b.x &&
-
-        a.y < b.y+b.size &&
-
-        a.y+a.size > b.y
-
-    );
-
-
-}
-// 描画
+    // 描画
 
 function draw(){
-
 
     ctx.clearRect(
         0,
@@ -869,7 +818,8 @@ function draw(){
         player.x,
         player.y,
         "cyan",
-        shipType
+        shipType,
+        false
     );
 
 
@@ -881,32 +831,16 @@ function draw(){
     enemies.forEach(e=>{
 
 
-        let enemyName;
-
-
-        if(e.type===0)
-            enemyName="destroyer";
-
-
-        if(e.type===1)
-            enemyName="cruiser";
-
-
-        if(e.type===2)
-            enemyName="battleship";
-
-
-
         drawShip(
             e.x,
             e.y,
             "red",
-            enemyName
+            "enemy",
+            true
         );
 
 
     });
-
 
 
 
@@ -935,7 +869,6 @@ function draw(){
 
 
 
-
     // 敵弾
 
     ctx.fillStyle="orange";
@@ -953,7 +886,6 @@ function draw(){
 
 
     });
-
 
 
 
@@ -1000,7 +932,6 @@ function draw(){
 
 
 
-
     // UI
 
     hp.innerHTML =
@@ -1015,7 +946,6 @@ function draw(){
     "WAVE "+wave;
 
 
-
 }
 
 
@@ -1025,9 +955,40 @@ function draw(){
 
 
 
-// 船を描く
+// 船描画
 
-function drawShip(x,y,color,type){
+function drawShip(x,y,color,type,enemy){
+
+
+    ctx.save();
+
+
+
+    ctx.translate(
+        x+20,
+        y+20
+    );
+
+
+
+    // 敵は下向き
+    // プレイヤーは上向き
+
+    if(enemy){
+
+        ctx.rotate(Math.PI);
+
+    }
+
+
+
+
+    ctx.translate(
+        -20,
+        -20
+    );
+
+
 
 
 
@@ -1042,17 +1003,11 @@ function drawShip(x,y,color,type){
     if(type==="carrier"){
 
 
-
         ctx.fillRect(
-
-            x,
-
-            y+15,
-
+            0,
+            15,
             55,
-
             25
-
         );
 
 
@@ -1060,19 +1015,11 @@ function drawShip(x,y,color,type){
 
 
         ctx.fillRect(
-
-            x+15,
-
-            y,
-
+            15,
+            0,
             20,
-
             15
-
         );
-
-
-        return;
 
 
     }
@@ -1080,33 +1027,29 @@ function drawShip(x,y,color,type){
 
 
 
+    // 普通の船
 
-
-
-    // 戦艦
-
-    if(type==="battleship"){
-
+    else{
 
 
         ctx.beginPath();
 
 
         ctx.moveTo(
-            x+20,
-            y
+            20,
+            0
         );
 
 
         ctx.lineTo(
-            x+45,
-            y+45
+            45,
+            45
         );
 
 
         ctx.lineTo(
-            x,
-            y+45
+            0,
+            45
         );
 
 
@@ -1118,78 +1061,25 @@ function drawShip(x,y,color,type){
 
 
 
+
+        // 砲台
+
         ctx.fillStyle="black";
 
 
         ctx.fillRect(
-
-            x+18,
-
-            y+5,
-
+            18,
+            8,
             5,
-
-            20
-
+            18
         );
-
-
-        return;
 
 
     }
 
 
 
-
-
-
-
-
-    // 駆逐艦・巡洋艦
-
-    ctx.beginPath();
-
-
-
-    ctx.moveTo(
-
-        x+20,
-
-        y
-
-    );
-
-
-
-    ctx.lineTo(
-
-        x+40,
-
-        y+40
-
-    );
-
-
-
-    ctx.lineTo(
-
-        x,
-
-        y+40
-
-    );
-
-
-
-    ctx.closePath();
-
-
-
-    ctx.fill();
-
-
-
+    ctx.restore();
 
 
 }
