@@ -1,94 +1,65 @@
-body {
-    margin: 0;
-    padding: 0;
-    background: #001b33;
-    color: white;
-    text-align: center;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-    touch-action: none;
-}
+body{
 
-
-h1 {
-    margin: 10px;
-}
-
-
-canvas {
-    background: #0077aa;
-    display: block;
-    margin: auto;
-    border: 3px solid white;
-
-    width: 95vw;
-    max-width: 500px;
-    height: auto;
-}
-
-
-#select {
-
-    margin: 10px;
+margin:0;
+background:#003b5c;
+color:white;
+text-align:center;
+font-family:sans-serif;
+overflow:hidden;
 
 }
 
 
-#select button {
+canvas{
 
-    font-size: 20px;
-    padding: 10px;
-    margin: 5px;
+background:#0088aa;
 
-    border-radius: 10px;
-    border: none;
+display:block;
 
-    background: #444;
-    color: white;
+margin:auto;
 
-}
+width:95vw;
+max-width:500px;
 
-
-#controls {
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    gap: 10px;
-
-    margin-top: 10px;
+border:2px solid white;
 
 }
 
 
-#controls button {
+button{
 
-    width: 80px;
-    height: 70px;
+font-size:25px;
 
-    font-size: 35px;
+padding:10px;
 
-    border-radius: 15px;
+margin:5px;
 
-    border: 2px solid white;
-
-    background: #333;
-
-    color: white;
+border-radius:15px;
 
 }
 
 
-#controls button:active {
+#controls{
 
-    background: #777;
+position:fixed;
+
+bottom:20px;
+
+left:0;
+
+right:0;
+
+display:flex;
+
+justify-content:center;
+
+gap:15px;
 
 }
 
 
-#info {
+#select{
 
-    font-size: 20px;
+margin:10px;
 
 }
