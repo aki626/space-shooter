@@ -2,10 +2,27 @@ body {
     margin: 0;
     background: black;
     overflow: hidden;
+    text-align: center;
+    touch-action: none;
 }
 
 canvas {
     display: block;
     margin: auto;
     background: #111;
+    max-width: 100%;
+}
+
+#controls {
+    margin-top: 10px;
+}
+
+button {
+    font-size: 35px;
+    width: 90px;
+    height: 70px;
+    margin: 5px;
+    border-radius: 15px;
+    background: #333;
+    color: white;
 }
