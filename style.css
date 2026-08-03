@@ -3,7 +3,7 @@ body{
     margin:0;
     padding:0;
 
-    background:#003b5c;
+    background:#001f3f;
 
     color:white;
 
@@ -19,31 +19,31 @@ body{
 
 
 
-h1{
+#title{
 
-    margin:5px;
-
-}
-
-
-
-#select{
-
-    margin:10px;
+    margin-top:60px;
 
 }
 
 
 
-#select button{
+#title h1{
 
-    font-size:20px;
+    font-size:40px;
 
-    padding:10px;
+}
 
-    margin:5px;
 
-    border-radius:12px;
+
+button{
+
+    font-size:22px;
+
+    padding:12px 20px;
+
+    margin:8px;
+
+    border-radius:15px;
 
     border:none;
 
@@ -55,16 +55,43 @@ h1{
 
 
 
+button:active{
+
+    background:#777;
+
+}
+
+
+
+#startButton{
+
+    background:#0066cc;
+
+    font-size:30px;
+
+    margin-top:25px;
+
+}
+
+
+
+#shipInfo{
+
+    font-size:20px;
+
+}
+
+
+
 canvas{
 
-    display:block;
+    display:none;
 
     margin:auto;
 
-    background:#0088aa;
+    background:#0077aa;
 
     border:3px solid white;
-
 
     width:95vw;
 
@@ -76,26 +103,23 @@ canvas{
 
 
 
-
 #controls{
 
     position:fixed;
 
-    bottom:15px;
+    bottom:20px;
 
     left:0;
 
     right:0;
 
 
-    display:flex;
+    display:none;
+
 
     justify-content:center;
 
-    align-items:center;
-
-
-    gap:12px;
+    gap:15px;
 
 }
 
@@ -107,32 +131,17 @@ canvas{
 
     height:70px;
 
-
-    font-size:32px;
-
+    font-size:35px;
 
     border-radius:20px;
-
-    border:2px solid white;
-
-
-    background:#222;
-
-    color:white;
-
-}
-
-
-
-#controls button:active{
-
-    background:#777;
 
 }
 
 
 
 #status{
+
+    display:none;
 
     font-size:20px;
 
